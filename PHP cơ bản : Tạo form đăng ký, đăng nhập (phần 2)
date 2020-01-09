@@ -1,0 +1,82 @@
+https://kungfuphp.com/php-co-ban/php-co-ban-tao-form-dang-ky-dang-nhap-phan-2.html
+Chúng ta sẽ tạo form đăng nhập login.php, đặt trong folder my_website
+
+<html>
+<head>
+	<title>Trang đăng nhập</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<form method="POST" action="login.php">
+	<fieldset>
+	    <legend>Đăng nhập</legend>
+	    	<table>
+	    		<tr>
+	    			<td>Username</td>
+	    			<td><input type="text" name="username" size="30"></td>
+	    		</tr>
+	    		<tr>
+	    			<td>Password</td>
+	    			<td><input type="password" name="password" size="30"></td>
+	    		</tr>
+	    		<tr>
+	    			<td colspan="2" align="center"> <input type="submit" name="btn_submit" value="Đăng nhập"></td>
+	    		</tr>
+	    	</table>
+  </fieldset>
+  </form>
+</body>
+</html>
+
+
+muốn sử dụng session để lưu thông tin , 
+thì bạn  phải khởi tạo session bằng function session_start() 
+và thì tốt nhất nên đặt function session_start() đầu trang
+
+<?php
+session_start();
+?>
+
+
+kiểm tra thông tin đăng nhập và lưu vào lại session như code đầy đủ dưới đây
+
+chuyển hướng trang web tới trang index.php.
+Vì thế chúng ta tiếp tục tạo trang index.php (đặt trong thư mục my_website) 
+để xử lý thông tin, gọi nôm na là xử lý hậu đăng nhập.
+
+index.php
+
+<?php
+session_start();
+//tiến hành kiểm tra là người dùng đã đăng nhập hay chưa
+//nếu chưa, chuyển hướng người dùng ra lại trang đăng nhập
+if (!isset($_SESSION['username'])) {
+	 header('Location: login.php');
+}
+?>
+<html>
+<head>
+	<title>trang chủ</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	Chúc mừng bạn có username là <?php echo $_SESSION['username'];  ?> đã đăng nhập thành công !
+</body>
+</html>
+
+
+<?php
+session_start();
+//tiến hành kiểm tra là người dùng đã đăng nhập hay chưa
+//nếu chưa, chuyển hướng người dùng ra lại trang đăng nhập
+if (!isset($_SESSION['username'])) {
+	 header('Location: login.php');
+}
+?>
+
+chúng ta sẽ tiến hành kiểm tra khi một ai đó chưa đăng nhập nhưng cố tình truy cập vào trang index.php 
+bằng cách điền địa chỉ
+
+
+
+

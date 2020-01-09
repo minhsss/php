@@ -1,0 +1,194 @@
+PHP cơ bản : Tạo form đăng ký, đăng nhập (phần 1) https://kungfuphp.com/php-co-ban/php-co-ban-tao-form-dang-ky-dang-nhap-phan-1.html
+ cấu trúc thư mục
+admin
+bootstrap
+inc
+lib
+connection.php
+register.php
+
+
+register.php
+<html>
+<head>
+	<title>Form đăng ký thành viên</title>
+</head>
+<body>
+	<form action="register.php" method="post">
+		<table>
+			<tr>
+				<td colspan="2">Đăng Ký</td>
+			</tr>	
+			<tr>
+				<td>Tên Đăng Nhập :</td>
+				<td><input type="text" id="username" name="username"></td>
+			</tr>
+			<tr>
+				<td>Mật Khẩu :</td>
+				<td><input type="password" id="pass" name="pass"></td>
+			</tr>
+			<tr>
+				<td>Họ Tên :</td>
+				<td><input type="text" id="name" name="name"></td>
+			</tr>
+			<tr>
+				<td>Email :</td>
+				<td><input type="text" id="email" name="email"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="submit" name="btn_submit" value="Dang ky"></td>
+			</tr>
+ 
+		</table>
+		
+	</form>
+</body>
+</html>
+
+tạo bảng users
+CREATE DATABASE IF NOT EXISTS `Têncsdl` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `tên csdl`;
+ 
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) NOT NULL,
+  `password` varchar(30) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+connection.php
+require_once("lib/connection.php");
+
+Trong thẻ <form> ở trên có phương thức method mình cố tình để sẵn là method=”POST” nên các bạn phải dùng từ khóa 
+$_POST để có thể lấy được thông tin
+Trong PHP, từ khóa $_POST chỉ lấy được giá trị của thẻ input thông qua thuộc tính name, không phải thẻ id nhé các bạn
+Ngoài phương thức POST, chúng ta còn có thể sử dụng phương thức GET và sử dụng từ khóa $_GET để lấy dữ liệu
+<?php
+	if (isset($_POST["btn_submit"])) {
+		//lấy thông tin từ các form bằng phương thức POST
+		$username = $_POST["username"];
+		$password = $_POST["pass"];
+		$name = $_POST["name"];
+		$email = $_POST["email"];
+		//Kiểm tra điều kiện bắt buộc đối với các field không được bỏ trống
+		if ($username == "" || $password == "" || $name == "" || $email == "") {
+			echo "bạn vui lòng nhập đầy đủ thông tin";
+		}else{
+			//thực hiện việc lưu trữ dữ liệu vào db
+		}
+	}
+?>
+
+<?php
+	if (isset($_POST["btn_submit"])) {
+		//lấy thông tin từ các form bằng phương thức POST
+		$username = $_POST["username"];
+		$password = $_POST["pass"];
+		$name = $_POST["name"];
+		$email = $_POST["email"];
+		//Kiểm tra điều kiện bắt buộc đối với các field không được bỏ trống
+		if ($username == "" || $password == "" || $name == "" || $email == "") {
+			echo "bạn vui lòng nhập đầy đủ thông tin";
+		}else{
+			$sql = "INSERT INTO users(
+										username,
+										password,
+										name,
+										email
+									) VALUES (
+										'$username',
+										'$password',
+										'$name',
+										'$email'
+									)";
+			// thực thi câu $sql với biến conn lấy từ file connection.php
+			mysqli_query($conn,$sql);
+			echo "chúc mừng bạn đã đăng ký thành công";
+		}
+	}
+ 
+?>
+
+
+full code php
+<html>
+	<head>
+		<title>kungfuphp - Form đăng ký thành viên</title>
+	</head>
+	<body>
+		<?php
+		require_once("lib/connection.php");
+		if (isset($_POST["btn_submit"])) {
+  			//lấy thông tin từ các form bằng phương thức POST
+  			$username = $_POST["username"];
+  			$password = $_POST["pass"];
+ 			 $name = $_POST["name"];
+  			$email = $_POST["email"];
+  			//Kiểm tra điều kiện bắt buộc đối với các field không được bỏ trống
+			  if ($username == "" || $password == "" || $name == "" || $email == "") {
+				   echo "bạn vui lòng nhập đầy đủ thông tin";
+  			}else{
+  					// Kiểm tra tài khoản đã tồn tại chưa
+  					$sql="select * from users where username='$username'";
+					$kt=mysqli_query($conn, $sql);
+ 
+					if(mysqli_num_rows($kt)  > 0){
+						echo "Tài khoản đã tồn tại";
+					}else{
+						//thực hiện việc lưu trữ dữ liệu vào db
+	    				$sql = "INSERT INTO users(
+	    					username,
+	    					password,
+	    					name,
+						    email
+	    					) VALUES (
+	    					'$username',
+	    					'$password',
+						    '$name',
+	    					'$email'
+	    					)";
+					    // thực thi câu $sql với biến conn lấy từ file connection.php
+   						mysqli_query($conn,$sql);
+				   		echo "chúc mừng bạn đã đăng ký thành công";
+					}
+									    
+					
+			  }
+	}
+	?>
+	<form action="register.php" method="post">
+		<table>
+			<tr>
+				<td colspan="2">Form dang ky</td>
+			</tr>	
+			<tr>
+				<td>Username :</td>
+				<td><input type="text" id="username" name="username"></td>
+			</tr>
+			<tr>
+				<td>Password :</td>
+				<td><input type="password" id="pass" name="pass"></td>
+			</tr>
+			<tr>
+				<td>Ho Ten :</td>
+				<td><input type="text" id="name" name="name"></td>
+			</tr>
+			<tr>
+				<td>Email :</td>
+				<td><input type="text" id="email" name="email"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><input type="submit" name="btn_submit" value="Dang ky"></td>
+			</tr>
+ 
+		</table>
+ 
+	</form>
+	</body>
+	</html>
+  
+  
+  
+

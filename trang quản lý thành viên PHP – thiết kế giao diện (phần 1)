@@ -1,0 +1,69 @@
+https://kungfuphp.com/php-co-ban/huong-dan-tao-trang-quan-ly-thanh-vien-php-thiet-ke-giao-dien-phan-1.html
+
+quan-ly-thanh-vien.php
+
+<html lang="en">
+    <meta charset="uft-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstap core CSS -->
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="node_modules/bootstrap/css/boostrap.min.css" ref="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    </script> <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <title>Quản Lý Thành Viên</title>
+
+    <head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <h3>Quản Lý Thành Viên</h3>
+                <table class="table table-striped table-inverse table-responsive">
+                    <thead class="thead-inverse">
+                        <tr>
+                        <th>STT</th>
+                            <th>Tên Đăng Nhập</th>
+                            <th>Họ Tên</th>
+                            <th>Email</th>
+                            <th>Cấp Độ</th>
+                            <th>Hành Động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <th>member1</th>
+                            <th>Thanh Vien 1</th>
+                            <th>thanhvien1@gmail.com</th>
+                            <th>Thanh Vien</th>
+                            <th><a href="chinh-sua-tv.php?id=1">Sửa</a><a href="xoa-tv.php?id=1">Xóa</a></th>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <th>member2</th>
+                            <th>Thanh Vien 2</th>
+                            <th>thanhvien2@gmail.com</th>
+                            <th>Thanh Vien</th>
+                            <th><a href="chinh-sua-tv.php?id=2">Sửa</a><a href="xoa-tv.php?id=2">Xóa</a></th>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <th>member3</th>
+                            <th>Thanh Vien 3</th>
+                            <th>thanhvien3@gmail.com</th>
+                            <th>Thanh Vien</th>
+                            <th><a href="chinh-sua-tv.php?id=3">Sửa</a><a href="xoa-tv.php?id=3">Xóa</a></th>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /.Container-->
+    </body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    </head>
+</html>

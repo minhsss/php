@@ -1,0 +1,71 @@
+https://kungfuphp.com/php-co-ban/huong-dan-tao-trang-quan-ly-thanh-vien-php-hien-thi-du-lieu-phan-2.html
+<html lang="en">
+    <meta charset="uft-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstap core CSS -->
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="node_modules/bootstrap/css/boostrap.min.css" ref="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    </script> <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <title>Quản Lý Thành Viên</title>
+
+    <head>
+
+    <body>
+        <?php
+            require_once("lib/connection.php");
+        ?>
+        <div class="container">
+            <div class="row">
+                <h3>Quản Lý Thành Viên</h3>
+                <table class="table table-striped table-inverse table-responsive">
+                    <thead class="thead-inverse">
+                        <tr>
+                        <th>STT</th>
+                            <th>Tên Đăng Nhập</th>
+                            <th>Họ Tên</th>
+                            <th>Email</th>
+                            <th>Cấp Độ</th>
+                            <th>Hành Động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                            $stt = 1 ;
+                            $sql = "SELECT * FROM users";
+                            // thực thi câu $sql với biến conn lấy từ file connection.php
+                            $query = mysqli_query($conn,$sql);
+                            while ($data = mysqli_fetch_array($query)) {                                  
+                        ?>
+                        <tr>
+                            <th scope="row"><?php echo $stt++ ?></th>
+                            <th><?php echo $data["username"]; ?></th>
+                            <th><?php echo $data["name"]; ?></th>
+                            <th><?php echo $data["email"]; ?></th>
+                            <td>
+                                <?php
+                                    if ($data["level"] == 1) {
+                                        echo "Administrator";
+                                    }else{
+                                        echo "Member";
+                                    }
+                                ?>
+                            </td>
+                            <th><a href="chinh-sua-tv.php?id=<?php echo $data["id"]; ?>">Sửa</a><a href="xoa-tv.php?id=<?php echo $data["id"]; ?>">Xóa</a></th>
+                        </tr>    
+                        <?php
+                        } 
+                        ?>                  
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /.Container-->
+    </body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    </head>
+</html>

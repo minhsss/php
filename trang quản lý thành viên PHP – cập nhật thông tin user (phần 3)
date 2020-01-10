@@ -1,0 +1,68 @@
+https://kungfuphp.com/php-co-ban/huong-dan-tao-trang-quan-ly-thanh-vien-php-cap-nhat-thong-tin-user-phan-3.html
+
+chinh-sua-thanh-vien.php
+
+<html lang="en">
+    <meta charset="uft-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstap core CSS -->
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="../node_modules/bootstrap/css/boostrap.min.css" ref="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    </script> <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <title>Thông Tin Thành Viên</title>
+
+    <head>
+
+    <body>
+    <?php
+            require_once("../lib/connection.php");
+            $id = "";
+            $name = "";
+		    $email = "";
+		    $level = "";
+            if (isset($_GET["id"])) {
+                //thực hiện việc lấy thông tin user
+                $id = $_GET["id"];
+                $sql = "select * from users where id = $id";
+                $query = mysqli_query($conn, $sql);
+                while ($data = mysqli_fetch_array($query)) {
+                    $name  = $data["name"];
+		            $email = $data["email"];
+		            $level = $data["level"];
+                }
+            }
+        ?>
+        <div class="container">
+        <h3>Thông Tin Thành Viên</h3>
+        <caption>Danh Sách Thành Viên Đã Đăng Ký</caption>
+            <div class="row">
+                <form method="POST" name="fr_update">
+                <table class="table table-striped table-inverse table-responsive">
+                    
+                    <input type="hidden" name="id_user" value="<?php echo $id; ?>">
+                        <tr><td>Họ Tên : </td><td><input type="text" name="name" value="<?php echo $name; ?>"/></td></tr>
+                        <tr><td>Địa Chỉ Email : </td><td><input type="text" name="email"  value="<?php echo $email; ?>"/></td></tr>
+                        <tr>
+          		            <td> Quyền : </td>
+          		            <td>
+          			            <select name="level">
+          				        <option value="1"  <?php echo ($level == 1)?"selected":""; ?>>Administrator</option>
+          				        <option value="2"  <?php echo ($level == 2)?"selected":""; ?>>Member</option>
+          			            </select>
+          		            </td>
+                          </tr>   
+                        <tr><td colspan="2"><input type="submit" name="save" value="Lưu"/></td></tr>   
+                </table>
+            </div>
+        </div>
+        <!-- /.Container-->
+    </body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    </head>
+</html>
+

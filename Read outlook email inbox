@@ -1,0 +1,39 @@
+https://www.infoandapps.com/blog/php-script-to-read-outlook-email-inbox/
+
+
+<?php
+  error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+  
+  $incoming_mail_server = 'imap.gmail.com'; 
+  //This is an example incoming mail server for gmail which you can configure to your outlook, check out the manual on Supported IMAP client list
+  
+  $your_email = 'me@outlookmail.com'; // your outlook email ID
+  $yourpassword = 'xyz' // your outlook email password
+  
+  $mbox   = imap_open("{$incoming_mail_server}", $your_email , $yourpassword )   or  die("can't connect: " . imap_last_error());
+  $num = imap_num_msg($mbox); // read total messages in email
+  $MC = imap_check($mbox);
+  $msg=array();
+  // Fetch an overview for all messages in INBOX
+  $result = imap_fetch_overview($mbox,"$num:{$MC->Nmsgs}",0);
+  foreach ($result as $overview) {
+    echo 'Message no'.$overview->msgno. '<br/>';
+         "{$overview->subject}<br/>";
+           $check = imap_mailboxmsginfo($mbox);
+      
+        echo $check->Unread;
+       
+        echo $overview->subject;
+        echo $overview->body;
+        
+    //code to check and display email received from a particular Email address
+        if(preg_match("/xxx@gmail.com/",$overview->from,$match)){
+              $msg[$overview->msgno]=$overview->subject;
+              imap_delete($mbox,$overview->msgno);
+        }
+        else{
+              imap_delete($mbox,$overview->msgno);
+        }
+  }
+       imap_close($mbox); 
+?>

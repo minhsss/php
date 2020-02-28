@@ -1,0 +1,98 @@
+https://garrettstjohn.com/articles/reading-email-php/
+
+
+<?php
+
+class Email_reader {
+
+	// imap server connection
+	public $conn;
+
+	// inbox storage and inbox message count
+	private $inbox;
+	private $msg_cnt;
+
+	// email login credentials
+	private $server = 'yourserver.com';
+	private $user   = 'email@yourserver.com';
+	private $pass   = 'yourpassword';
+	private $port   = 143; // adjust according to server settings
+
+	// connect to the server and get the inbox emails
+	function __construct() {
+		$this->connect();
+		$this->inbox();
+	}
+
+	// close the server connection
+	function close() {
+		$this->inbox = array();
+		$this->msg_cnt = 0;
+
+		imap_close($this->conn);
+	}
+
+	// open the server connection
+	// the imap_open function parameters will need to be changed for the particular server
+	// these are laid out to connect to a Dreamhost IMAP server
+	function connect() {
+		$this->conn = imap_open('{'.$this->server.'/notls}', $this->user, $this->pass);
+	}
+
+	// move the message to a new folder
+	function move($msg_index, $folder='INBOX.Processed') {
+		// move on server
+		imap_mail_move($this->conn, $msg_index, $folder);
+		imap_expunge($this->conn);
+
+		// re-read the inbox
+		$this->inbox();
+	}
+
+	// get a specific message (1 = first email, 2 = second email, etc.)
+	function get($msg_index=NULL) {
+		if (count($this->inbox) <= 0) {
+			return array();
+		}
+		elseif ( ! is_null($msg_index) && isset($this->inbox[$msg_index])) {
+			return $this->inbox[$msg_index];
+		}
+
+		return $this->inbox[0];
+	}
+
+	// read the inbox
+	function inbox() {
+		$this->msg_cnt = imap_num_msg($this->conn);
+
+		$in = array();
+		for($i = 1; $i <= $this->msg_cnt; $i++) {
+			$in[] = array(
+				'index'     => $i,
+				'header'    => imap_headerinfo($this->conn, $i),
+				'body'      => imap_body($this->conn, $i),
+				'structure' => imap_fetchstructure($this->conn, $i)
+			);
+		}
+
+		$this->inbox = $in;
+	}
+
+}
+
+?>
+
+
+
+PHP already has a nice IMAP extension for working with email. The extension needs to be installed and enabled before moving forward. The core functionality is all there, but the specifics on how to use it aren’t necessarily all that clear.
+
+Here’s a PHP class I put together to do some basic operations on an IMAP Inbox. It’s a bit tailored to this project but could be easily revised to fit other needs or extended to be more full-featured.
+
+A fair amount of this is self-explanatory or commented inline, but I will go over the inbox() method because it is the core functionality. The IMAP inbox is much like an array with a numbered key starting at 1. In the inbox() method, I store that index so that the email can be moved, deleted, or read again later.
+
+Next, the header is stored with the function imap_headerinfo(). This pulls down an object from the server containing information like the Subject, From: address, To: address, and text encoding type.
+
+Using imap_body(), the body text of the email is retrieved. What’s returned isn’t overly clean as it’s just the raw body with boundaries included (see: multipart messages). If the received email is in HTML, there will be a plain text and HTML version included. It’s certainly possible to parse through this data like any email client does, but it’s definitely a little bit messy.
+
+Lastly, ‘structure’ is retrieved with the imap_fetchstructure() function. This is very important if you are trying to access attachments as I was with My Slow Low. In my next post, I’ll go further into the details of saving an attachment from an email and share some more about how I implemented the email processor for My Slow Low.
+

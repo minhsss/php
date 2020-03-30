@@ -1,0 +1,230 @@
+https://scotch.io/tutorials/getting-started-with-redis-in-php
+
+Getting Started with Redis in PHP
+Samuel Oloruntoba
+ @KayandraJT
+February 03, 2015
+29 Comments
+203.961 Views
+ Bookmark
+Deploy Your App Faster with Okta’s Identity Management Platform
+What is Redis?
+Redis created by Salvatore Sanfilippo is an open source, in-memory data structure server with advanced key-value cache and store, often referred to as a NoSQL database. It is also referred to as a data structure server, since it can store strings, hashes, lists, sets, sorted sets, and more.
+
+The essence of a key-value store is the ability to store some data, called a value inside a key. This data can later be retrieved only if we know the exact key used to store it.
+
+Usage of Redis
+Salvatore Sanfilippo (creator of Redis) said Redis can be used to replace a RDBMS database. Now, although nothing is impossible, I think it would be a bad idea, because using a key-value store for things, like a full-text search, might be painful. Especially, when you consider ACID compliance and syncing data in a key-value store: painful.
+
+Below are just a few uses of Redis, though there are many more than this.
+
+Caching can be used in the same manner as memcached.
+Leaderboards or related problems.
+Counting stuff.
+Real time analysis.
+Deletion and filtering.
+Show latest item listings in your home page.
+Aim of this Article
+This article's aim is not to show you the syntax of Redis (you can learn about Redis's syntax here), in this article, we will learn how to use Redis in PHP.
+
+Install Redis
+Redis is pretty easy to install and the instructions, included, are for both Windows and Linux users.
+
+Install Redis on Linux
+To install Redis on Linux, is pretty simple, but you'll need TCL installed if you don't have TCL installed. You can simply run:
+
+Upcoming Course: Make 20 React Apps!
+ $ sudo apt-get install tcl 
+To install Redis:
+
+
+$ wget http://download.redis.io/releases/redis-2.8.19.tar.gz
+$ tar xzf redis-2.8.19.tar.gz
+$ cd redis-2.8.19
+$ make
+Note: 2.8.19 should be replaced with the latest stable version of Redis.
+
+All Redis binaries are saved in the SRC Folder. To start the server simply:
+
+
+$ src/redis-server
+Install on Windows
+Redis installation on Windows is very easy, just visit this link, download a package, and install.
+
+Install Predis a Redis Client for PHP
+Predis is a Redis Client for PHP. It is well written and has a lot of support from the community. To use Predis just clone the repository into your working directory:
+
+
+$ git clone git://github.com/nrk/predis.git
+Connecting to Redis
+First, we'll require the Redis Autoloader and register it. Then we'll wrap the client in a try catch block. The connection setting for connecting to Redis on a local server is different from connecting to a remote server.
+
+
+<?php
+require "predis/autoload.php";
+PredisAutoloader::register();
+
+try {
+	$redis = new PredisClient();
+
+	// This connection is for a remote server
+	/*
+		$redis = new PredisClient(array(
+		    "scheme" => "tcp",
+		    "host" => "153.202.124.2",
+		    "port" => 6379
+		));
+	*/
+}
+catch (Exception $e) {
+	die($e->getMessage());
+}
+Now that we have successfully connected to the Redis server, let's start using Redis.
+
+Redis Datatypes
+Redis supports a range of datatypes and you might wonder what a NOSQL key-value store has to do with datatypes? Well, these datatypes help developers store data in a meaningful way and can make data retrieval faster. Here are some of the datatypes supported by Redis:
+
+String: Similar to Strings in PHP.
+List: Similar to a single dimensional array in PHP. You can push, pop, shift and unshift, the elements that are placed in order or insertion FIFO (first in, first out).
+Hash: Maps between string fields and string values. They are the perfect data type to represent objects (e.g.: A User with a number of fields like name, surname, and so forth).
+Set: Similar to list, except that it has no order and each element may appear only once.
+Sorted Set: Similar to Redis Sets with a unique feature of values stored in set. The difference is that each member of a Sorted Set is associated with score, used to order the set from the smallest score to the largest.
+Others are bitmaps and hyperloglogs, but they will not be discussed in this article, as they are pretty dense.
+
+Getters and Setters
+In Redis, the most important commands are SET, GET and EXISTS. These commands are used to store, check, and retrieve data from a Redis server. Just like the commands, the Predis class can be used to perform Redis operations by methods with the same name as commands. For example:
+
+
+<?php
+// sets message to contian "Hello world"
+$redis->set(';message';, ';Hello world';);
+
+// gets the value of message
+$value = $redis->get('message');
+
+// Hello world
+print($value); 
+
+echo ($redis->exists('message')) ? "Oui" : "please populate the message key";
+Increments and Decrements
+INCR and DECR are commands used to either decrease or increase a value.
+
+<?php
+$redis->set("counter", 0);
+
+$redis->incr("counter"); // 1
+$redis->incr("counter"); // 2
+
+$redis->decr("counter"); // 1
+We can also increase the values of the counter key by larger integer values or we can decrease the value of the counter key with the INCRBY and DECRBY commands.
+
+
+<?php
+$redis->set("counter", 0);
+
+$redis->incrby("counter", 15); // 15
+$redis->incrby("counter", 5);  // 20
+
+$redis->decrby("counter", 10); // 10
+Working with Lists
+There are a few basic Redis commands for working with lists and they are:
+
+LPUSH: adds an element to the beginning of a list
+RPUSH: add an element to the end of a list
+LPOP: removes the first element from a list and returns it
+RPOP: removes the last element from a list and returns it
+LLEN: gets the length of a list
+LRANGE: gets a range of elements from a list
+Simple List Usage:
+
+
+<?php
+$redis->rpush("languages", "french"); // [french]
+$redis->rpush("languages", "arabic"); // [french, arabic]
+
+$redis->lpush("languages", "english"); // [english, french, arabic]
+$redis->lpush("languages", "swedish"); // [swedish, english, french, arabic]
+
+$redis->lpop("languages"); // [english, french, arabic]
+$redis->rpop("languages"); // [english, french]
+
+$redis->llen("languages"); // 2
+
+$redis->lrange("languages", 0, -1); // returns all elements
+$redis->lrange("languages", 0, 1); // [english, french]
+Working with Hashes
+A hash in Redis is a map between one string field and string values, like a one-to-many relationship. The commands associated with hashes in Redis are:
+
+HSET: sets a key-value on the hash
+HGET: gets a key-value on the hash
+HGETALL: gets all key-values from the hash
+HMSET: mass assigns several key-values to a hash
+HDEL: deletes a key from the object
+HINCRBY: increments a key-value from the hash with a given value.
+
+<?php
+$key = ';linus torvalds';;
+$redis->hset($key, ';age';, 44);
+$redis->hset($key, ';country';, ';finland';);
+$redis->hset($key, 'occupation', 'software engineer');
+$redis->hset($key, 'reknown', 'linux kernel');
+$redis->hset($key, 'to delete', 'i will be deleted');
+
+$redis->get($key, 'age'); // 44
+$redis->get($key, 'country')); // Finland
+
+$redis->del($key, 'to delete');
+
+$redis->hincrby($key, 'age', 20); // 64
+
+$redis->hmset($key, [
+    'age' => 44,
+    'country' => 'finland',
+    'occupation' => 'software engineer',
+    'reknown' => 'linux kernel',
+]);
+
+// finally
+$data = $redis->hgetall($key);
+print_r($data); // returns all key-value that belongs to the hash
+/*
+    [
+        'age' => 44,
+        'country' => 'finland',
+        'occupation' => 'software engineer',
+        'reknown' => 'linux kernel',
+    ]
+*/
+Working with Sets
+The list of commands associated with sets include: - SADD: adds a N number of values to the key - SREM: removes N number of values from a key - SISMEMBER: if a value exists - SMEMBERS: lists of values in the set.
+
+
+<?php
+$key = "countries";
+$redis->sadd($key, ';china';);
+$redis->sadd($key, ['england', 'france', 'germany']);
+$redis->sadd($key, 'china'); // this entry is ignored
+
+$redis->srem($key, ['england', 'china']);
+
+$redis->sismember($key, 'england'); // false
+
+$redis->smembers($key); // ['france', 'germany']
+Set Expiry and Persistence
+Since Redis is an in-memory data store, you would probably not store data forever. Therefore, this brings us to EXPIRE, EXPIREAT, TTL, PERSIST - EXPIRE: sets an expiration time, in seconds, for the key after which it is deleted - EXPIREAT: sets an expiration time using unix timestamps for the key after which it is deleted - TTL: gets the remaining time left for a key expiration - PERSIST: makes a key last forever by removing the expiration timer from the key.
+
+
+$key = "expire in 1 hour";
+$redis->expire($key, 3600); // expires in 1 hour
+$redis->expireat($key, time() + 3600); // expires in 1 hour
+
+sleep(600); // don't try this, just an illustration for time spent
+
+$redis->ttl($key); // 3000, ergo expires in 50 minutes
+
+$redis->persist($key); // this will never expire.
+Conclusion
+The commands listed in this article are just a handful of many existing Redis commands (see more redis commands).
+
+Future of Redis
+Redis is a better replacement for memcached, as it is faster, scales better (supports master-slave replication), supports datatypes that many (Facebook, Twitter, Instagram) have dropped memcached for Redis. Redis is open source and many brilliant programmers from the open-source community have contributed patches.
